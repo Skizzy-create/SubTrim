@@ -1,0 +1,6 @@
+bin/
+obj/
+*.user
+.vs/
+# BDArmory.dll is a third-party binary used only for compiling; copy it from GameData/BDArmory/Plugins.
+refs/
