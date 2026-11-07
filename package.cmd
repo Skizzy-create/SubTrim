@@ -5,7 +5,7 @@ setlocal
 cd /d "%~dp0"
 set "KSPARG="
 if not "%~1"=="" set "KSPARG=-p:KSPRoot=%~1"
-dotnet build Source\SubTrim.BDArmory\SubTrim.BDArmory.csproj -c Release -nologo %KSPARG% || exit /b 1
+dotnet build Source\SubTrim.BDArmory\SubTrim.BDArmory.csproj -c Release -nologo -p:DebugType=None -p:DebugSymbols=false %KSPARG% || exit /b 1
 dotnet run -c Release --project Source\Tests\ControllerSim\ControllerSim.csproj || exit /b 1
 set "OUT=%~dp0GameData\SubTrim\Plugins"
 if not exist "%OUT%" mkdir "%OUT%"
