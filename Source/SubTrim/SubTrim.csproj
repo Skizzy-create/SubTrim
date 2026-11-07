@@ -1,17 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    SubTrim <-> BDArmory Plus bridge. KSP only loads it when BDArmory is installed (KSPAssemblyDependency),
-    so the core SubTrim.dll keeps working without BDArmory.
+    SubTrim core plugin (no BDArmory reference).
 
-    Build:  dotnet build -c Release            (from src\SubTrim.BDArmory; builds SubTrim too)
-    BDArmory.dll used for compiling: refs\BDArmory.dll (a copy of BDArmory Plus 1.13.1), override with
-            -p:BDArmoryDll="C:\path\to\BDArmory.dll"
-    Output: bin\Release\net48\SubTrim.BDArmory.dll  ->  GameData\SubTrim\Plugins
+    Build:  dotnet build -c Release            (from Source\SubTrim; or run package.cmd at the repo root)
+    Other KSP install:  dotnet build -c Release -p:KSPRoot="C:\KSP"
+    Output: bin\Release\net48\SubTrim.dll  ->  GameData\SubTrim\Plugins
   -->
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyName>SubTrim.BDArmory</AssemblyName>
-    <RootNamespace>SubTrim.BDA</RootNamespace>
+    <AssemblyName>SubTrim</AssemblyName>
+    <RootNamespace>SubTrim</RootNamespace>
     <LangVersion>9.0</LangVersion>
     <Nullable>disable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -21,20 +19,30 @@
     <Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
     <KSPRoot Condition="'$(KSPRoot)' == ''">D:\Epic Games\KerbalSpaceProgram\English</KSPRoot>
     <KSPManaged>$(KSPRoot)\KSP_x64_Data\Managed</KSPManaged>
-    <BDArmoryDll Condition="'$(BDArmoryDll)' == ''">$(MSBuildThisFileDirectory)..\refs\BDArmory.dll</BDArmoryDll>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BDASurfaceAISource.cs" />
+    <Compile Include="Api.cs" />
+    <Compile Include="FastAccess.cs" />
+    <Compile Include="DepthController.cs" />
+    <Compile Include="SubTrimSettings.cs" />
+    <Compile Include="HullBreachLink.cs" />
+    <Compile Include="Actuators\BallastActuator.cs" />
+    <Compile Include="Actuators\KPBallastActuator.cs" />
+    <Compile Include="Actuators\BuoyancyAdjusterActuator.cs" />
+    <Compile Include="Actuators\WBIBallastActuator.cs" />
+    <Compile Include="Actuators\ResourceBallastActuator.cs" />
+    <Compile Include="Actuators\VirtualBallastActuator.cs" />
+    <Compile Include="SubTrimVesselModule.cs" />
+    <Compile Include="ModuleSubTrim.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SubTrim\SubTrim.csproj"><Private>false</Private></ProjectReference>
     <Reference Include="Assembly-CSharp"><HintPath>$(KSPManaged)\Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="Assembly-CSharp-firstpass"><HintPath>$(KSPManaged)\Assembly-CSharp-firstpass.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine"><HintPath>$(KSPManaged)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(KSPManaged)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="BDArmory"><HintPath>$(BDArmoryDll)</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(KSPManaged)\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
 </Project>

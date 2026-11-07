@@ -1,0 +1,90 @@
+# Release SubTrim when a tag like v1.0.0 is pushed.
+#
+# Why CI does not compile the plugin: SubTrim.dll links against KSP's Assembly-CSharp.dll and UnityEngine*.dll,
+# which are proprietary (Squad / Private Division / Unity) and may not be uploaded to GitHub. No official, legally
+# redistributable KSP reference-assembly package exists. So the release DLLs are built locally against your own KSP
+# install (package.cmd) and committed under GameData/SubTrim/Plugins. They contain only SubTrim's own MIT code.
+# CI then
+#   1. runs the controller simulation (pure C#, no KSP needed),
+#   2. checks that the tag, SubTrim.version, AssemblyInfo and the committed DLLs all carry the same version,
+#   3. zips GameData/SubTrim as SubTrim-<version>.zip and publishes a GitHub release with notes from CHANGELOG.md.
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Controller simulation
+        run: dotnet run -c Release --project Source/Tests/ControllerSim/ControllerSim.csproj
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check versions and prebuilt DLLs
+        id: ver
+        shell: python
+        run: |
+          import json, os, re, sys
+          tag = os.environ["GITHUB_REF_NAME"]
+          ver = tag[1:] if tag.startswith("v") else tag
+          if not re.fullmatch(r"\d+\.\d+\.\d+", ver):
+              sys.exit(f"tag {tag} is not vMAJOR.MINOR.PATCH")
+          v = json.load(open("GameData/SubTrim/SubTrim.version"))["VERSION"]
+          avc = f'{v["MAJOR"]}.{v["MINOR"]}.{v["PATCH"]}'
+          if avc != ver:
+              sys.exit(f"SubTrim.version says {avc}, tag says {ver}")
+          four = ver + ".0"
+          for src in ("Source/SubTrim/Properties/AssemblyInfo.cs", "Source/SubTrim.BDArmory/Properties/AssemblyInfo.cs"):
+              text = open(src, encoding="utf-8").read()
+              if f'AssemblyFileVersion("{four}")' not in text:
+                  sys.exit(f"{src}: AssemblyFileVersion is not {four}")
+          for dll in ("GameData/SubTrim/Plugins/SubTrim.dll", "GameData/SubTrim/Plugins/SubTrim.BDArmory.dll"):
+              if not os.path.isfile(dll):
+                  sys.exit(f"{dll} missing: run package.cmd and commit the DLLs before tagging")
+              data = open(dll, "rb").read()
+              # the Win32 version resource stores FileVersion as UTF-16LE text
+              if four.encode("utf-16-le") not in data:
+                  sys.exit(f"{dll} was not built as {four}: rebuild with package.cmd and commit it")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"version={ver}\n")
+          print("version", ver, "OK")
+
+      - name: Release notes from CHANGELOG.md
+        shell: python
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          import os, re
+          ver = os.environ["VERSION"]
+          text = open("CHANGELOG.md", encoding="utf-8").read()
+          m = re.search(rf"^## \[{re.escape(ver)}\][^\n]*\n(.*?)(?=^## \[|\Z)", text, re.S | re.M)
+          notes = m.group(1).strip() if m else f"SubTrim {ver}"
+          open("release-notes.md", "w", encoding="utf-8").write(notes + "\n")
+
+      - name: Package
+        run: |
+          mkdir -p dist
+          zip -r -X "dist/SubTrim-${{ steps.ver.outputs.version }}.zip" GameData/SubTrim README.md CHANGELOG.md LICENSE
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "dist/SubTrim-${{ steps.ver.outputs.version }}.zip" \
+            --title "SubTrim ${{ steps.ver.outputs.version }}" \
+            --notes-file release-notes.md

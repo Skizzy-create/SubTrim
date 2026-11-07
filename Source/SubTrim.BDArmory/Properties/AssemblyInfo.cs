@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SubTrim.BDArmory")]
 [assembly: AssemblyDescription("SubTrim bridge to the BDArmory Plus Surface AI (Submarine mode)")]
 [assembly: AssemblyProduct("SubTrim")]
-[assembly: AssemblyCopyright("Copyright (c) 2026 SubTrim contributors, MIT License")]
+[assembly: AssemblyCopyright("Copyright (c) 2026 Skizzy-create, MIT License")]
 [assembly: ComVisible(false)]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

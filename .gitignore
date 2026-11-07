@@ -2,5 +2,7 @@ bin/
 obj/
 *.user
 .vs/
-# BDArmory.dll is a third-party binary used only for compiling; copy it from GameData/BDArmory/Plugins.
+dist/
+# BDArmory.dll is a third-party (GPLv3) binary used only for compiling the bridge; copy it from
+# GameData/BDArmory/Plugins into Source/refs/ (see README, "Building"). Never commit it.
 refs/

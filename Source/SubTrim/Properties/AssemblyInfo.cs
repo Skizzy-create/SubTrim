@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SubTrim")]
 [assembly: AssemblyDescription("Automatic neutral-buoyancy trim and depth hold for KSP submarines")]
 [assembly: AssemblyProduct("SubTrim")]
-[assembly: AssemblyCopyright("Copyright (c) 2026 SubTrim contributors, MIT License")]
+[assembly: AssemblyCopyright("Copyright (c) 2026 Skizzy-create, MIT License")]
 [assembly: ComVisible(false)]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
