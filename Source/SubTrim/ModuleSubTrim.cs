@@ -82,7 +82,13 @@ namespace SubTrim
 
         public override void OnUpdate()
         {
-            if (part.PartActionWindow == null) return;
+            if (part.PartActionWindow == null)
+            {
+                // This part left the cached module's vessel (broke off, undocked): drop the reference, so a debris part
+                // does not keep that vessel's module, and through it the vessel and its parts, alive after it dies.
+                if ((object)vm != null && (object)vm.Vessel != vessel) vm = null;
+                return;
+            }
             uiTimer -= Time.deltaTime;
             if (uiTimer > 0f) return;
             uiTimer = 0.5f;

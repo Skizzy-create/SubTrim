@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("SubTrim")]
 [assembly: AssemblyCopyright("Copyright (c) 2026 Skizzy-create, MIT License")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
 
 [assembly: KSPAssembly("SubTrim.BDArmory", 1, 0)]
 // KSP skips this assembly (and only this one) when either dependency is missing.

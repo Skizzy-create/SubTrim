@@ -2,6 +2,13 @@
 
 All notable changes to SubTrim are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-11-08
+
+### Fixed
+
+- Memory: the BuoyancyAdjuster driver no longer keeps a static reference to the BuoyancyAdjuster add-on. That add-on is recreated in every flight scene, so the static field kept the previous scene's destroyed instance, and the vessel it tracked, alive. Each driver now holds its own reference.
+- Memory: a command part that breaks off or undocks drops the SubTrim vessel module it cached from its old vessel, so the debris no longer keeps that vessel's module, parts and modules alive.
+
 ## [1.0.0] - 2026-11-08
 
 First release, for KSP 1.12.x.

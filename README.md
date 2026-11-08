@@ -101,7 +101,7 @@ Every 0.1 s SubTrim measures the boat's mass and buoyant capacity, then runs a c
 
 ## Status
 
-1.0.0 is the first release. The controller has been checked in an offline simulation (`Source/Tests/ControllerSim`: 9 scenarios, including AI depth changes, model error, slow and fast pumps, and deep holds). In-game behaviour with each ballast mod still needs wider testing; please report issues with a `KSP.log` (set `debug = true` in `SubTrim.cfg` for more detail).
+1.0.1 is a bug-fix release (memory leaks; see `CHANGELOG.md`). The controller has been checked in an offline simulation (`Source/Tests/ControllerSim`: 9 scenarios, including AI depth changes, model error, slow and fast pumps, and deep holds). In-game behaviour with each ballast mod still needs wider testing; please report issues with a `KSP.log` (set `debug = true` in `SubTrim.cfg` for more detail).
 
 ## Building
 

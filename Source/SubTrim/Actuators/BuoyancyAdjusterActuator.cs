@@ -22,7 +22,6 @@ namespace SubTrim
         static Func<object, Vessel> getTrackedVessel;
         static Func<object, float> getLevel;
         static Action<object, float> setLevel;
-        static UnityEngine.Object addon;
 
         static void Init()
         {
@@ -47,12 +46,15 @@ namespace SubTrim
 
         readonly Vessel vessel;
         PartResource level;
+        // Per instance, not static: BuoyancyAdjuster is a per-flight-scene addon, and a static reference would keep the
+        // destroyed instance of an earlier scene (and the vessel it was tracking) alive.
+        readonly UnityEngine.Object addon;
 
         public BuoyancyAdjusterActuator(Vessel v)
         {
             vessel = v;
             part = v.rootPart;
-            if (!Alive(addon)) addon = UnityEngine.Object.FindObjectOfType(addonType);
+            addon = UnityEngine.Object.FindObjectOfType(addonType);
         }
 
         public override string Kind => "BA";
